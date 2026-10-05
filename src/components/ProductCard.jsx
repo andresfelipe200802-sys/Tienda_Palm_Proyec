@@ -2,11 +2,21 @@ import { useState } from "react";
 import QuantityInput from "./QuantityInput";
 import { formatCOP } from "../utils/formatters";
 
+/** Emojis de respaldo si la imagen del producto no carga. */
+const EMOJI_FALLBACK = {
+  1: "☕",
+  2: "🍯",
+  3: "🫓",
+  4: "🍮",
+  5: "🍧",
+  6: "🍫",
+};
+
 /**
  * ProductCard — Tarjeta de producto individual del catálogo.
  *
  * Props:
- *  - product          : { id, nombre, precio, stock }
+ *  - product          : { id, nombre, precio, stock, imagen }
  *  - remainingStock   : stock disponible (stock total - en carrito)
  *  - onAddToCart       : callback(product, quantity)
  *  - addToast          : callback para emitir notificaciones
@@ -18,9 +28,11 @@ export default function ProductCard({
   addToast,
 }) {
   const [quantity, setQuantity] = useState(1);
+  const [imageFailed, setImageFailed] = useState(false);
 
   const isOutOfStock = remainingStock <= 0;
   const effectiveMax = Math.max(remainingStock, 1);
+  const showImage = Boolean(product.imagen) && !imageFailed;
 
   const handleAdd = () => {
     if (isOutOfStock) return;
@@ -50,14 +62,21 @@ export default function ProductCard({
 
   return (
     <article className={`product-card ${isOutOfStock ? "out-of-stock" : ""}`} id={`product-${product.id}`}>
-      <div className="product-card-emoji" aria-hidden="true">
-        {product.id === 1 && "☕"}
-        {product.id === 2 && "🍯"}
-        {product.id === 3 && "🫓"}
-        {product.id === 4 && "🍮"}
-        {product.id === 5 && "🍧"}
-        {product.id === 6 && "🍫"}
-      </div>
+      {showImage ? (
+        <div className="product-card-media">
+          <img
+            src={product.imagen}
+            alt={product.nombre}
+            loading="lazy"
+            decoding="async"
+            onError={() => setImageFailed(true)}
+          />
+        </div>
+      ) : (
+        <div className="product-card-emoji" aria-hidden="true">
+          {EMOJI_FALLBACK[product.id] ?? "🛒"}
+        </div>
+      )}
 
       <div className="product-card-body">
         <h2 className="product-name">{product.nombre}</h2>
