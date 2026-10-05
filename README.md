@@ -30,9 +30,7 @@ Se aplicaron principios de arquitectura limpia:
 
 ---
 
-## Evidencias del Aprendiz (Casos Funcionales)
-
-*(Reemplaza el texto en la columna de capturas por el nombre real de tu imagen en la carpeta `/evidencias`)*
+##(Casos Funcionales)
 
 | # | Funcionalidad | Captura (nombre o ruta) | ¿Funciona? (Sí/No) |
 |---|---|---|:---:|
